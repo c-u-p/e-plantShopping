@@ -5,7 +5,9 @@ import { removeItem, updateQuantity } from './CartSlice';
 import './CartItem.css';
 
 export let totalQuantity = 0;
-
+export function incrementTotalQuantity() {
+    totalQuantity += 1;
+}
 const CartItem = ({ onContinueShopping }) => {
   const cart = useSelector(state => state.cart.items);
   const dispatch = useDispatch();
@@ -15,13 +17,12 @@ const CartItem = ({ onContinueShopping }) => {
     let totalAmount = 0;
     cart.forEach((item) => {
         totalAmount += item.cost * item.quantity;
-        totalQuantity += item.quantity;
     })
     return totalAmount;
   };
 
   const handleContinueShopping = (e) => {
-    setShowProductList(true);
+    onContinueShopping(e);
   };
 
   const handleCheckoutShopping = (e) => {
@@ -29,12 +30,14 @@ const CartItem = ({ onContinueShopping }) => {
 };
 
   const handleIncrement = (item) => {
-    dispatch(updateQuantity(item.quantity++));
+    dispatch(updateQuantity(item.quantity + 1));
+    totalQuantity += 1;
   };
 
   const handleDecrement = (item) => {
     if (item.quantity > 1) {
-        dispatch(updateQuantity(item.quantity--));
+        dispatch(updateQuantity(item.quantity - 1));
+        totalQuantity -= 1;
     } else {
         dispatch(removeItem(item));
     }
